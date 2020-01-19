@@ -1,6 +1,7 @@
 const api = require('../services/api');
 const Dev = require('../models/Dev');
 const parseStringAsArray = require('../utils/parseStringAsArray');
+const { findConnections, sendMessage } = require('../websocket');
 
 class DevController{
   async index(request, response){
@@ -33,8 +34,15 @@ class DevController{
         bio,
         techs: techsArray,
         location
-      });
+      }); 
+
+      const sendSocketMessageTo = findConnections(
+        {latitude, longitude},
+        techsArray
+      );
+      sendMessage(sendSocketMessageTo, 'new-dev', dev)
     }
+   
 
 
 
